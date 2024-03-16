@@ -1,0 +1,36 @@
+name: Deploy website
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Repository Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v2
+              with:
+                  node-version: 14 # Use the latest stable Node.js version
+                  cache: "node_modules" # Cache the entire node_modules directory
+
+            - name: Install Netlify
+              run: npm install netlify-cli@17.10.1 -g
+
+            - name: Install Dependencies
+              run: npm ci
+
+            - name: Build project
+              run: npm run build
+
+            - name: Deploy to Netlify
+              id: netlify_deploy
+              run: |
+                  netlify deploy \
+                    --dir dist \
+                    --site ${{ secrets.NETLIFY_SITE_ID }} \
+                    --auth ${{ secrets.NETLIFY_API_TOKEN }}
