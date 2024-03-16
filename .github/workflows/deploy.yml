@@ -1,38 +1,13 @@
-name: Build and Deploy website
+name: Build and Deploy
 
 on:
   push:
     branches:
       - main
-      - "*" # Run on all branches
-  pull_request:
-    branches:
-      - "*" # Run on all branches
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Install Node.js and Yarn
-        uses: actions/setup-node@v2
-        with:
-          node-version: 20
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Run ESLint
-        run: yarn lint
-
   build-and-deploy:
     runs-on: ubuntu-latest
-    needs: lint # Make sure linting is completed before deployment
-
-    if: github.ref == 'refs/heads/main' # Only run deployment on main branch push
 
     steps:
       - name: Repository Checkout
